@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="1186.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+   <children>
+      <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1186.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Compute" />
+        </menus>
+      </MenuBar>
+      <Pane layoutX="307.0" layoutY="34.0" prefHeight="60.0" prefWidth="572.0">
+         <children>
+            <ImageView id="undoId" fx:id="undoButton" fitHeight="41.0" fitWidth="48.0" layoutX="14.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@photo/redo-arrow.png" />
+               </image>
+            </ImageView>
+            <ImageView id="redoId" fx:id="redoButton" fitHeight="43.0" fitWidth="48.0" layoutX="102.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@photo/redo-arrow.png" />
+               </image>
+            </ImageView>
+            <ImageView id="addJointId" fx:id="jointButtonId" fitHeight="60.0" fitWidth="52.0" layoutX="193.0" layoutY="4.0" onMouseClicked="#setAddingMode" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@photo/add-button-inside-black-circle.png" />
+               </image>
+            </ImageView>
+            <ImageView id="deleteJointId" fx:id="deleteModeId" fitHeight="52.0" fitWidth="52.0" layoutX="290.0" layoutY="4.0" onMouseClicked="#setDeleteMode" pickOnBounds="true" preserveRatio="true" rotate="45.0">
+               <image>
+                  <Image url="@photo/add-button-inside-black-circle.png" />
+               </image>
+            </ImageView>
+            <ImageView id="drawLineId" fx:id="addLine" fitHeight="60.0" fitWidth="60.0" layoutX="392.0" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
+               <image>
+                  <Image url="@photo/substract.png" />
+               </image>
+            </ImageView>
+            <ImageView id="drawPointLineId" fx:id="addArrow" fitHeight="60.0" fitWidth="60.0" layoutX="514.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
+               <image>
+                  <Image url="@photo/left-arrow.png" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
+      <Pane id="myPane" fx:id="myPane" layoutY="107.0" onMouseClicked="#setJoint" prefHeight="548.0" prefWidth="1186.0" />
+      <Separator layoutX="4.0" layoutY="102.0" prefHeight="5.0" prefWidth="1178.0" />
+   </children>
+</Pane>
