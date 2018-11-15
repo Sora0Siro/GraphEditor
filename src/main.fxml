@@ -8,7 +8,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="1186.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<Pane fx:id="grandPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="653.0" prefWidth="1186.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <MenuBar layoutY="2.0" prefHeight="25.0" prefWidth="1186.0">
         <menus>
@@ -52,19 +52,19 @@
                   <Image url="@photo/add-button-inside-black-circle.png" />
                </image>
             </ImageView>
-            <ImageView id="drawLineId" fx:id="addLine" fitHeight="60.0" fitWidth="60.0" layoutX="392.0" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
+            <ImageView id="drawLineId" fx:id="addLine" fitHeight="60.0" fitWidth="60.0" layoutX="392.0" onMouseClicked="#setLineAdding" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
                <image>
                   <Image url="@photo/substract.png" />
                </image>
             </ImageView>
-            <ImageView id="drawPointLineId" fx:id="addArrow" fitHeight="60.0" fitWidth="60.0" layoutX="514.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
+            <ImageView id="drawPointLineId" fx:id="addArrow" fitHeight="60.0" fitWidth="60.0" layoutX="514.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#setArrowAdding" pickOnBounds="true" preserveRatio="true" rotate="-45.0">
                <image>
                   <Image url="@photo/left-arrow.png" />
                </image>
             </ImageView>
          </children>
       </Pane>
-      <Pane id="myPane" fx:id="myPane" layoutY="107.0" onMouseClicked="#setJoint" prefHeight="548.0" prefWidth="1186.0" />
+      <Pane id="myPane" fx:id="myPane" layoutY="107.0" onMouseClicked="#setJoint" onMouseMoved="#whileMouseMoving" prefHeight="548.0" prefWidth="1186.0" />
       <Separator layoutX="4.0" layoutY="102.0" prefHeight="5.0" prefWidth="1178.0" />
    </children>
 </Pane>
