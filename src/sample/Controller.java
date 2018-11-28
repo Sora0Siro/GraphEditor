@@ -11,6 +11,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Controller
 {
     private boolean deleteMode = false;
@@ -21,6 +24,9 @@ public class Controller
     private Line line = new Line();
 
     private boolean lineStarted = false;
+
+    private List<Node> joints;
+    private List<Node> lines;
 
     //@FXML
     //private Pane grandPane;
@@ -40,28 +46,30 @@ public class Controller
     @FXML
     private ImageView addArrow;
 
+    //Events
     public void setJoint(MouseEvent event)
     {
+        //create lists for nodes
+        if(joints == null)
+        {
+            joints = new ArrayList<>();
+            lines = new ArrayList<>();
+        }
         if(addingMode)
         {
             Circle circle = new Circle();
 
-            circle.setCenterX(event.getX());
-            circle.setCenterY(event.getY());
-            circle.setStroke(Color.BLACK);
-            circle.setStrokeWidth(2);
-            circle.setStrokeType(StrokeType.OUTSIDE);
-            circle.setRadius(20.0f);
-            circle.setFill(Color.GREEN);
+            createCircle(event,circle);
 
             circle.setOnMouseClicked((MouseEvent event2) -> {
                 System.out.println("YOU CLICKED ON JOINT");
-                getAllNodes();
+                getAllNodesInfo();
                 if(deleteMode)
                 {
+                    checkIfJointContainsLine(circle);
                     myPane.getChildren().remove(circle);
                 }
-                else if(this.lineStarted)
+                else if(lineStarted)
                 {
                     setEndPositionFormJoint(circle);
                 }
@@ -72,6 +80,7 @@ public class Controller
             });
 
             myPane.getChildren().add(circle);
+            //myPane.getChildren().add(joints.size(),circle);
         }
     }
 
@@ -144,7 +153,17 @@ public class Controller
         }
     }
 
-    //line from joint
+    public void whileMouseMoving(MouseEvent event)
+    {
+        if(this.lineStarted)
+        {
+            line.setEndX(event.getX()-5);
+            line.setEndY(event.getY()-5);
+            line.setVisible(true);
+        }
+    }
+
+    //methods
     public void setStartPositionFromJoint(Circle circle)
     {
         line = new Line();
@@ -156,70 +175,74 @@ public class Controller
         this.lineStarted = true;
     }
 
-    public void whileMouseMoving(MouseEvent event)
-    {
-        if(this.lineStarted)
-        {
-            line.setEndX(event.getX()-5);
-            line.setEndY(event.getY()-5);
-            line.setVisible(true);
-        }
-    }
-
     public void setEndPositionFormJoint(Circle circle)
     {
         if(this.lineStarted)
         {
-            line.setEndX(circle.getCenterX());
-            line.setEndY(circle.getCenterY());
+            line.setEndX((getMiddleValue(circle.getBoundsInParent().getMinX(),circle.getBoundsInParent().getMaxX())));
+            line.setEndY((getMiddleValue(circle.getBoundsInParent().getMinY(),circle.getBoundsInParent().getMaxY())));
 
+            line.setId(String.valueOf("line "+ lines.size()));
+            lines.add(line);
             this.lineStarted = false;
         }
     }
 
-    public void getAllNodes()
+    public void getAllNodesInfo()
     {
+        System.out.println("Nodes in Pane");
         for(Node n:myPane.getChildren())
         {
+            System.out.println(n.getId());
+
             //Circle[centerX=362.0, centerY=367.0, radius=20.0, fill=0x008000ff, stroke=0x000000ff, strokeWidth=2.0]
             //Line[startX=362.0, startY=367.0, endX=233.0, endY=189.0, stroke=0x000000ff, strokeWidth=1.0]
         }
+
+        System.out.println("Nodes in joints list");
+        for(Node n: joints)
+        {
+            System.out.println(n.toString());
+        }
+
+        System.out.println("Nodes in lines list");
+        for(Node n: lines)
+        {
+            System.out.println(n.toString());
+            System.out.println(n.getId());
+        }
     }
 
-
-    /*public void setStartPosition(MouseEvent event)
+    private void createCircle(MouseEvent event,Circle circle)
     {
-        if(addingLine)
-        {
-            line = new Line();
-            line.setVisible(false);
-            line.setStartX(event.getX());
-            line.setStartY(event.getY());
+        circle.setCenterX(event.getX());
+        circle.setCenterY(event.getY());
+        circle.setStroke(Color.BLACK);
+        circle.setStrokeWidth(2);
+        circle.setStrokeType(StrokeType.OUTSIDE);
+        circle.setRadius(20.0f);
+        circle.setFill(Color.GREEN);
 
-            myPane.getChildren().add(line);
-        }
-    }*/
+        circle.setId(String.valueOf("joint " + joints.size()));
+        joints.add(circle);
+    }
 
-    /*public void refreshWhileDragged(MouseEvent event)
+    private void checkIfJointContainsLine(Circle circle)
     {
-        if(addingLine && (line.getEndX()!= 0))
-        {
-            line.setEndX(event.getX());
-            line.setEndY(event.getY());
-            line.setVisible(true);
-        }
-    }*/
+        System.out.println("Check cycle");
 
-    /*public void setEndPosition(MouseEvent event)
+        for(Node line:lines)
+        {
+            if(circle.getBoundsInParent().intersects(line.getBoundsInParent()))
+            {
+                myPane.getChildren().remove(line);
+            }
+        }
+
+    }
+
+    private double getMiddleValue(double first,double second)
     {
-        if(addingLine)
-        {
-            System.out.println("END : ");
-            System.out.println("END X: " + String.valueOf(event.getX()));
-            System.out.println("END Y: " + String.valueOf(event.getX()));
-
-            line.setEndX(event.getX());
-            line.setEndY(event.getY());
-        }
-    }*/
+        return ((first+second)/2);
+    }
 }
