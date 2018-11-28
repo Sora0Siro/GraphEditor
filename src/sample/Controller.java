@@ -68,6 +68,7 @@ public class Controller
                 {
                     checkIfJointContainsLine(circle);
                     myPane.getChildren().remove(circle);
+                    joints.remove(circle);
                 }
                 else if(lineStarted)
                 {
@@ -202,13 +203,12 @@ public class Controller
         System.out.println("Nodes in joints list");
         for(Node n: joints)
         {
-            System.out.println(n.toString());
+            System.out.println(n.getId());
         }
 
         System.out.println("Nodes in lines list");
         for(Node n: lines)
         {
-            System.out.println(n.toString());
             System.out.println(n.getId());
         }
     }
@@ -231,14 +231,22 @@ public class Controller
     {
         System.out.println("Check cycle");
 
+        List<Node> linesForDelete = new ArrayList<>();
+
         for(Node line:lines)
         {
-            if(circle.getBoundsInParent().intersects(line.getBoundsInParent()))
+            if(line.contains(circle.getCenterX(),circle.getCenterY()))
             {
                 myPane.getChildren().remove(line);
+                linesForDelete.add(line);
             }
         }
 
+        for(Node l: linesForDelete)
+        {
+            lines.remove(l);
+        }
+        linesForDelete.clear();
     }
 
     private double getMiddleValue(double first,double second)
