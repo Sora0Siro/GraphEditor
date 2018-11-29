@@ -28,6 +28,9 @@ public class Controller
     private List<Node> joints;
     private List<Node> lines;
 
+    List<Node> linesToDrag;
+    List<Boolean> startPoint;
+
     //@FXML
     //private Pane grandPane;
 
@@ -61,9 +64,10 @@ public class Controller
 
             createCircle(event,circle);
 
-            circle.setOnMouseClicked((MouseEvent event2) -> {
+            circle.setOnMouseClicked((MouseEvent event2) ->
+            {
                 System.out.println("YOU CLICKED ON JOINT");
-                getAllNodesInfo();
+                //getAllNodesInfo();
                 if(deleteMode)
                 {
                     checkIfJointContainsLine(circle);
@@ -77,6 +81,14 @@ public class Controller
                 else if(addingLine && !lineStarted)
                 {
                     setStartPositionFromJoint(circle);
+                }
+            });
+
+            circle.setOnMouseDragged((MouseEvent event3)->
+            {
+                if(allModesIsOff())
+                {
+                    whatLinesToDrag(circle,event3);
                 }
             });
 
@@ -229,8 +241,6 @@ public class Controller
 
     private void checkIfJointContainsLine(Circle circle)
     {
-        System.out.println("Check cycle");
-
         List<Node> linesForDelete = new ArrayList<>();
 
         for(Node line:lines)
@@ -252,5 +262,117 @@ public class Controller
     private double getMiddleValue(double first,double second)
     {
         return ((first+second)/2);
+    }
+
+    private void whatLinesToDrag(Circle circle,MouseEvent mouseEvent)
+    {
+        linesToDrag = new ArrayList<>();
+        startPoint = new ArrayList<>();//false start, true end
+
+        for(Node l: lines)
+        {
+            if(l.contains(circle.getCenterX(),circle.getCenterY()))
+            {
+                if(startOrEndPointInLine(l,circle) == 0)
+                {
+                    linesToDrag.add(l);
+                    startPoint.add(false);
+                }
+                else if(startOrEndPointInLine(l,circle) == 1)
+                {
+                    linesToDrag.add(l);
+                    startPoint.add(true);
+                }
+                else
+                {
+                    System.out.println("Couldn't find right point");
+                }
+            }
+        }
+
+        /*for(int i =0;i<linesToDrag.size();i++)
+        {
+            System.out.println(linesToDrag.get(i).getId() +"|"+ linesToDrag.get(i).toString() + " Start?: " + startPoint.get(i).toString());
+        }*/
+
+        dragEverything(circle,mouseEvent);
+    }
+
+    private int startOrEndPointInLine(Node tmpLine,Circle circle)
+    {
+        System.out.println(tmpLine.toString().trim());
+
+        double startX,endX,startY,endY;
+
+        String[] values = tmpLine.toString().split("=");
+
+        for(int i =0;i<values.length;i++)
+        {
+            values[i] = values[i].replaceAll("[^\\d.]", "");
+        }
+        startX = Double.parseDouble(values[2]);
+        startY =  Double.parseDouble(values[3]);
+        endX =Double.parseDouble(values[4]);
+        endY =  Double.parseDouble(values[5]);
+
+        if (endX == Double.valueOf(circle.getCenterX()) && endY == Double.valueOf(circle.getCenterY()))
+        {
+            return 0;
+        }
+        else if (startX == Double.valueOf(circle.getCenterX()) && startY == Double.valueOf(circle.getCenterY()))
+        {
+            return 1;
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    private void dragEverything(Circle circle,MouseEvent mouseEvent)
+    {
+        System.out.println("PANE SHIT");
+        for(int i=0;i<linesToDrag.size();i++)
+        {
+            circle.setCenterX(mouseEvent.getX());
+            circle.setCenterY(mouseEvent.getY());
+            if(startPoint.get(i))
+            {
+                for (Node currentNode : myPane.lookupAll("Line"))
+                {
+                    if(currentNode.getId() == linesToDrag.get(i).getId())
+                    {
+                        ((Line) currentNode).setStartX(mouseEvent.getX());
+                        ((Line) currentNode).setStartY(mouseEvent.getY());
+                        circle.setCenterX(mouseEvent.getX());
+                        circle.setCenterY(mouseEvent.getY());
+                    }
+                }
+            }
+            else if(!startPoint.get(i))
+            {
+                for (Node currentNode : myPane.lookupAll("Line"))
+                {
+                    if(currentNode.getId() == linesToDrag.get(i).getId())
+                    {
+                        ((Line) currentNode).setEndX(mouseEvent.getX());
+                        ((Line) currentNode).setEndY(mouseEvent.getY());
+                        circle.setCenterX(mouseEvent.getX());
+                        circle.setCenterY(mouseEvent.getY());
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean allModesIsOff()
+    {
+        if (!deleteMode && !addingMode && !addingLine && !addingArrow)
+        {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }
