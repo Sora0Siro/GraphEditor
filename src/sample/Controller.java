@@ -89,6 +89,9 @@ public class Controller
                 if(allModesIsOff())
                 {
                     whatLinesToDrag(circle,event3);
+
+                    circle.setCenterX(event3.getX());
+                    circle.setCenterY(event3.getY());
                 }
             });
 
@@ -344,8 +347,6 @@ public class Controller
                     {
                         ((Line) currentNode).setStartX(mouseEvent.getX());
                         ((Line) currentNode).setStartY(mouseEvent.getY());
-                        circle.setCenterX(mouseEvent.getX());
-                        circle.setCenterY(mouseEvent.getY());
                     }
                 }
             }
@@ -357,8 +358,6 @@ public class Controller
                     {
                         ((Line) currentNode).setEndX(mouseEvent.getX());
                         ((Line) currentNode).setEndY(mouseEvent.getY());
-                        circle.setCenterX(mouseEvent.getX());
-                        circle.setCenterY(mouseEvent.getY());
                     }
                 }
             }
