@@ -32,12 +32,12 @@
       </MenuBar>
       <Pane layoutX="307.0" layoutY="34.0" prefHeight="60.0" prefWidth="572.0">
          <children>
-            <ImageView id="undoId" fx:id="undoButton" fitHeight="41.0" fitWidth="48.0" layoutX="14.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true">
+            <ImageView id="undoId" fx:id="undoButton" fitHeight="41.0" fitWidth="48.0" layoutX="14.0" layoutY="10.0" nodeOrientation="RIGHT_TO_LEFT" onMouseClicked="#undoButtClick" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@photo/redo-arrow.png" />
                </image>
             </ImageView>
-            <ImageView id="redoId" fx:id="redoButton" fitHeight="43.0" fitWidth="48.0" layoutX="102.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView id="redoId" fx:id="redoButton" fitHeight="43.0" fitWidth="48.0" layoutX="102.0" layoutY="9.0" onMouseClicked="#redoButtClick" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@photo/redo-arrow.png" />
                </image>

@@ -1,5 +1,6 @@
 package sample;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -11,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.StrokeType;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,10 @@ public class Controller
     List<Node> linesToDrag;
     List<Boolean> startPoint;
 
+    private List<List<Node>> nodesInPane = new ArrayList<>();
+
+    private int backSteps = 0;
+
     //@FXML
     //private Pane grandPane;
 
@@ -48,6 +54,32 @@ public class Controller
 
     @FXML
     private ImageView addArrow;
+
+    public void addPane(ObservableList<Node> nodes)
+    {
+        List<Node> tmpList = new ArrayList<>();
+        for(Node node: nodes)
+        {
+            tmpList.add(node);
+        }
+        nodesInPane.add(tmpList);
+    }
+
+    public List<Node> returnPrevNodes()
+    {
+        if(!((backSteps+1)>nodesInPane.size()))
+        {
+            return nodesInPane.get(nodesInPane.size()-(backSteps+1));
+        }
+        else if(backSteps<0)
+        {
+            return new ArrayList<>();
+        }
+        else{
+            return new ArrayList<>();
+        }
+    }
+
 
     //Events
     public void setJoint(MouseEvent event)
@@ -96,7 +128,6 @@ public class Controller
             });
 
             myPane.getChildren().add(circle);
-            //myPane.getChildren().add(joints.size(),circle);
         }
     }
 
@@ -362,6 +393,7 @@ public class Controller
                 }
             }
         }
+        ///////////////
     }
 
     private boolean allModesIsOff()
@@ -372,6 +404,26 @@ public class Controller
         }
         else {
             return false;
+        }
+    }
+
+    public void undoButtClick()
+    {
+        backSteps++;
+        myPane.getChildren().clear();
+        for(Node node: returnPrevNodes())
+        {
+            myPane.getChildren().add(node);
+        }
+    }
+
+    public void redoButtClick()
+    {
+        backSteps--;
+        myPane.getChildren().clear();
+        for(Node node: returnPrevNodes())
+        {
+            myPane.getChildren().add(node);
         }
     }
 }
