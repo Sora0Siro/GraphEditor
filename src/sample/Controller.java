@@ -37,6 +37,8 @@ public class Controller
 
     private int backSteps = 0;
 
+    private boolean undo = true;
+
     //@FXML
     //private Pane grandPane;
 
@@ -67,19 +69,18 @@ public class Controller
 
     public List<Node> returnPrevNodes()
     {
-        if(!((backSteps+1)>nodesInPane.size()))
-        {
-            return nodesInPane.get(nodesInPane.size()-(backSteps+1));
-        }
-        else if(backSteps<0)
+        if(backSteps<0)
         {
             return new ArrayList<>();
+        }
+        else if(!((backSteps+1)>nodesInPane.size()))
+        {
+            return nodesInPane.get(nodesInPane.size()-(backSteps+1));
         }
         else{
             return new ArrayList<>();
         }
     }
-
 
     //Events
     public void setJoint(MouseEvent event)
@@ -102,9 +103,11 @@ public class Controller
                 //getAllNodesInfo();
                 if(deleteMode)
                 {
+                    deleteRemainingNodes();
                     checkIfJointContainsLine(circle);
                     myPane.getChildren().remove(circle);
                     joints.remove(circle);
+                    nodesInPane.add(ObservToList(myPane.getChildren()));//при удалении вершины
                 }
                 else if(lineStarted)
                 {
@@ -127,8 +130,29 @@ public class Controller
                 }
             });
 
+            circle.setOnMouseReleased((MouseEvent event3)->
+            {
+                if(!deleteMode)
+                {
+                    deleteRemainingNodes();
+                    nodesInPane.add(ObservToList(myPane.getChildren()));//при окончательном переносе вершины
+                }
+            });
+
+            deleteRemainingNodes();
             myPane.getChildren().add(circle);
+            nodesInPane.add(ObservToList(myPane.getChildren()));//при добавлении вершины
         }
+    }
+
+    private List<Node> ObservToList(ObservableList<Node> observableList)
+    {
+        List<Node> tmpList = new ArrayList<>();
+        for(Node node:observableList)
+        {
+            tmpList.add(node);
+        }
+        return tmpList;
     }
 
     public void setAddingMode(MouseEvent event)
@@ -409,21 +433,65 @@ public class Controller
 
     public void undoButtClick()
     {
-        backSteps++;
-        myPane.getChildren().clear();
-        for(Node node: returnPrevNodes())
+        undo = true;
+
+        if(checkForSizing())
         {
-            myPane.getChildren().add(node);
+            backSteps++;
+
+            myPane.getChildren().clear();
+            for(Node node: returnPrevNodes())
+            {
+                myPane.getChildren().add(node);
+            }
         }
     }
 
     public void redoButtClick()
     {
-        backSteps--;
-        myPane.getChildren().clear();
-        for(Node node: returnPrevNodes())
+        undo = false;
+
+        if(checkForSizing())
         {
-            myPane.getChildren().add(node);
+            backSteps--;
+
+            myPane.getChildren().clear();
+            if(!returnPrevNodes().isEmpty())
+            {
+                for(Node node: returnPrevNodes())
+                {
+                    myPane.getChildren().add(node);
+                }
+            }
         }
     }
+
+    public boolean checkForSizing()
+    {
+        System.out.println("Steps: "+backSteps);
+        if(undo && backSteps < nodesInPane.size())
+        {
+            System.out.println("Steps: "+backSteps);
+            return true;
+        }
+        else if(!undo && backSteps > 0)
+        {
+            System.out.println("Steps: "+backSteps);
+            return true;
+        }
+        else {
+            System.out.println("History ended.");
+            return false;
+        }
+    }
+
+    public void deleteRemainingNodes()
+    {
+        if(nodesInPane.size() >0)
+        {
+            nodesInPane.subList((nodesInPane.size()-(backSteps)), nodesInPane.size()).clear();
+            if(backSteps != 0) backSteps=0;
+        }
+    }
+
 }
